@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+NAMESPACE=$1
+PARTIALPODNAME=$2
+
+if [[ -z $NAMESPACE ]]; then
+    echo -e "Namespace required"
+    exit 1
+fi
+
+
+if [[ -z $PARTIALPODNAME ]]; then
+    echo -e "Partial pod name is required"
+    exit 1
+fi
+
+kubectl get pods -n $1 | grep $2 | awk -F ' ' '{print $1}'

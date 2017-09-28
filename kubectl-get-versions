@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+NAMESPACE=$1
+FILENAME=$2
+
+if [[ -z $NAMESPACE ]]; then
+    echo -e "Namespace required"
+    exit 1
+fi
+
+
+if [[ -z $FILENAME ]]; then
+    echo -e "Filename is required"
+    exit 1
+fi
+
+kubectl describe deployments -n "$NAMESPACE" | grep Image > "$FILENAME"
+
+echo  'Wrote' "$FILENAME"
