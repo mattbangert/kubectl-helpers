@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+############################  SETUP PARAMETERS
+app_name='kube-healthcheck'
+
+############################  BASIC SETUP TOOLS
+msg() {
+    printf '%b\n' "$1" >&2
+}
+
+success() {
+        msg "\33[32m[✔]\33[0m ${1}${2}"
+}
+
+error() {
+    msg "\33[31m[✘]\33[0m ${1}${2}"
+}
+
+debug() {
+    if [ "$debug_mode" -eq '1' ] && [ "$ret" -gt '1' ]; then
+        msg "An error occurred in function \"${FUNCNAME[$i+1]}\" on line ${BASH_LINENO[$i+1]}, we're sorry for that."
+    fi
+}
+
+program_exists() {
+    local ret='0'
+    command -v $1 >/dev/null 2>&1 || { local ret='1'; }
+
+    # fail on non-zero return value
+    if [ "$ret" -ne 0 ]; then
+        return 1
+    fi
+
+    return 0
+}
+
+program_must_exist() {
+    program_exists $1
+
+    # throw error on non-zero return value
+    if [ "$?" -ne 0 ]; then
+        error "You must have '$1' installed to continue."
+    fi
+}
+
+lnif() {
+    if [ -e "$1" ]; then
+        ln -sf "$1" "$2"
+    fi
+    ret="$?"
+    debug
+}
+
+usage () {
+cat << EOD
+Usage: kube-healthcheck QA Running
+
+By default, kube-healthcheck will:
+ - Check the QA namespace
+ - Look for the status of a pod to be running
+ - Exit with a status of 0
+
+QA: Kubernetes namespace (Required)
+Running: Status of running pod (Defaults to Running)
+
+EOD
+
+exit 0
+}
+
+############################ MAIN()
+
+SUCCESSFUL=false
+
+program_must_exist kubectl
+
+
+NAMESPACE=$1
+STATUS=$2
+
+if [[ -z $NAMESPACE ]]; then
+    #statements
+    echo -e 'Namespace required'
+    exit 1
+fi
+
+if [[ -z $STATUS ]]; then
+    #statements
+    STATUS='Running'
+    echo "Setting status to $STATUS"
+fi
+
+arr=$(kubectl get pods -n "$NAMESPACE" | awk '{print $3}')
+
+case "${arr[@]}" in  *"$STATUS"*) SUCCESSFUL=true ;; esac
+
+if [[ $SUCCESSFUL == true  ]]; then
+    #statements
+    success "All is well in the cluster"
+fi
+
+if [[ $SUCCESSFUL == false ]]; then
+    #statements
+    error "Something is amiss, please check the output of below"
+    kubectl get pods -n $NAMESPACE
+    exit 1
+fi
