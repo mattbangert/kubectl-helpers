@@ -8,10 +8,15 @@ If nothing is passed as an environment the available contexts will be shown.
 HERE
 }
 
+if [[ $1 = 'h' ]]; then
+    #statements
+    usage
+fi
+
 if [[ -z $1 ]]; then
     #statements
     kubectl config get-contexts
     exit 1
 fi
 
-kubectl config set-context `kubectl config current-context` --namespace $1
+kubectl config set-context "kubectl config current-context" --namespace "$1"

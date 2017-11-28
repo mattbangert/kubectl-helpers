@@ -1,8 +1,31 @@
 #!/usr/bin/env bash
 
+usage () {
+cat << EOD
+Usage: kubectl-get-shell admindb bash
+
+QA: Kubernetes namespace (Required)
+admindb: Name of the pod you wish to exec into
+bash: Command you wish to exec
+
+EOD
+
+exit 0
+}
+
+if [[ $1 = 'h' ]]; then
+    usage
+fi
+
 if [[ -z $1 ]]; then
     echo -e "Podname is required"
     exit 1
 fi
 
-kubectl exec -ti $1 bash
+if [[ -z $2 ]]; then
+    echo -e "No command supplied, defaulting to bash"
+    $2='bash'
+fi
+
+
+kubectl exec -ti $1 $2

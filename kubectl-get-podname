@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
 
+usage () {
+cat << EOD
+Usage: kubectl-get-podname QA admin
+
+
+
+QA: Kubernetes namespace (Required)
+Admin: Partial name of the pod
+
+EOD
+
+exit 0
+}
+
 NAMESPACE=$1
 PARTIALPODNAME=$2
+
+if [[ $NAMESPACE = 'h' ]]; then
+    #statements
+    usage
+fi
 
 if [[ -z $NAMESPACE ]]; then
     echo -e "Namespace required"
