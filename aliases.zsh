@@ -9,6 +9,9 @@ alias kg='kubectl get'
 alias kgp='kubectl get pods'
 alias kgns='kubectl get namespaces'
 alias kgall='kubectl get ingress,service,deployment,pod'
+alias kgpn='kubectl-get-podname'
+alias kgv='kubectl-get-version'
+alias kgvs='kubectl-get-versions'
 
 # kubectl networking
 alias kp="kubectl proxy"
@@ -23,3 +26,4 @@ alias kuc='kubectl config use-context'
 alias ksc='kubectl config set-context "$(kubectl config current-context)"'
 alias kns='ksc --namespace'
 alias kgetexternalip="kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type==\"ExternalIP\")].address}"
+alias ksc='kubectl-switch-configs '

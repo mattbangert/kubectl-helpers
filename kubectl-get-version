@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+NAMESPACE=$1
+SERVICE=$2
+
+if [[ -z $NAMESPACE ]]; then
+    echo -e "Namespace required"
+    exit 1
+fi
+
+
+if [[ -z $SERVICE ]]; then
+    echo -e "Service is required"
+    exit 1
+fi
+
+kubectl describe deployment -n "$NAMESPACE"| grep Image | grep -i "$SERVICE"
